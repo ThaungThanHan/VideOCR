@@ -1,5 +1,6 @@
 # Pycache
 __pycache__/
+.DS_Store
 
 # Config file
 videocr_gui_config.ini

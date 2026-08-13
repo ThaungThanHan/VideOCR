@@ -34,6 +34,9 @@ dependencies = [
     "plyer ; sys_platform != 'win32'",
 ]
 
+[project.scripts]
+videocr-engine = "server_cli.__main__:main"
+
 [dependency-groups]
 dev = [
     "mypy",
@@ -64,7 +67,10 @@ exclude = [
 ]
 
 [tool.setuptools]
-packages = []
+packages = ["videocr", "server_cli", "server_cli.commands"]
+
+[tool.setuptools.package-dir]
+videocr = "CLI/videocr"
 
 [tool.setuptools.dynamic]
 version = { attr = "_version.__version__" }

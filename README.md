@@ -19,6 +19,111 @@ This repository also provides a version of VideOCR that can be used from the com
 
 The latest release incorporates the newest version of PaddleOCR for local processing and introduces the new Google Lens hybrid mode.
 
+## Server CPU Engine Quickstart
+
+This fork adds a server-focused command wrapper for Chinese subtitle extraction:
+
+```bash
+videocr-engine extract \
+  --input /path/to/job/input.mp4 \
+  --output /path/to/job/output.srt \
+  --language ch \
+  --crop x,y,width,height \
+  --progress-jsonl /path/to/job/progress.jsonl \
+  --cancel-file /path/to/job/cancel
+```
+
+The wrapper is intended for a future backend worker process. It is CPU-only, requires a manually selected subtitle crop, rejects non-Chinese server languages, emits JSONL progress events, supports cancellation, and writes validated UTF-8 SRT output.
+
+### Requirements
+
+- Python 3.11
+- FFmpeg/ffprobe available on `PATH`
+- A working VideOCR/PaddleOCR CPU runtime bundle, matching the upstream release layout
+- System packages needed by PyAV/Pillow on your platform
+
+On macOS with Homebrew:
+
+```bash
+brew install python@3.11 ffmpeg
+```
+
+On Ubuntu/Debian:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y python3.11 python3.11-venv ffmpeg
+```
+
+### Install From Source
+
+Create an isolated environment and install this fork:
+
+```bash
+python3.11 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install -e .
+```
+
+Check the Python dependencies:
+
+```bash
+.venv/bin/python -c "import av, numpy, PIL, psutil; print('core imports ok')"
+.venv/bin/python -m pip check
+```
+
+The upstream OCR executable/model bundle is still required for real extraction. In release builds this is the `PaddleOCR.PP-OCRv5.support.files` and `paddleocr-*` runtime layout beside the command. The server wrapper does not use Google Lens, GPU, CUDA, or the GUI.
+
+### Run The Server CLI
+
+First get help:
+
+```bash
+.venv/bin/videocr-engine --help
+.venv/bin/videocr-engine extract --help
+```
+
+Run extraction with a known subtitle crop:
+
+```bash
+.venv/bin/videocr-engine extract \
+  --input /var/lib/subextractor/jobs/example/input.mp4 \
+  --output /var/lib/subextractor/jobs/example/output.srt \
+  --language ch \
+  --crop 120,720,1040,180 \
+  --time-start 00:00:00 \
+  --progress-jsonl /var/lib/subextractor/jobs/example/progress.jsonl \
+  --cancel-file /var/lib/subextractor/jobs/example/cancel \
+  --timeout-seconds 7200
+```
+
+Important notes:
+
+- `--crop` is required and must be `x,y,width,height` inside the decoded video dimensions.
+- `--language` currently supports only `ch`.
+- Output and progress files must be inside the input job directory unless you pass `--allowed-root`.
+- Create the cancel marker file while the job is running to request cancellation:
+
+```bash
+touch /var/lib/subextractor/jobs/example/cancel
+```
+
+### Validate SRT Output
+
+```bash
+.venv/bin/python scripts/validate_srt.py /var/lib/subextractor/jobs/example/output.srt
+```
+
+Exit codes for `videocr-engine extract`:
+
+- `0`: success
+- `2`: validation error
+- `10`: engine failure
+- `20`: cancellation
+- `30`: timeout
+
+Additional server documentation is in `docs/`.
+
 ## Setup
 
 ### Windows:

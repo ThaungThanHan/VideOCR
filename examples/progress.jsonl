@@ -1,0 +1,4 @@
+{"event":"started","stage":"metadata","progress":0,"timestamp":0}
+{"event":"processing","stage":"ocr","progress":5,"timestamp":0,"current_time":0,"duration":742.8}
+{"event":"processing","stage":"export","progress":95,"timestamp":0,"current_time":742.8,"duration":742.8}
+{"event":"completed","stage":"export","progress":100,"timestamp":0,"output":"output.srt","cues":27}

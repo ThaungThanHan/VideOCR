@@ -1,0 +1,15 @@
+{
+  "job_id": "example-job",
+  "input": "/var/lib/subextractor/jobs/example-job/input.mp4",
+  "output": "/var/lib/subextractor/jobs/example-job/output.srt",
+  "language": "ch",
+  "crop": {
+    "x": 120,
+    "y": 720,
+    "width": 1040,
+    "height": 180
+  },
+  "time_start": "00:00:00",
+  "time_end": "",
+  "timeout_seconds": 7200
+}
