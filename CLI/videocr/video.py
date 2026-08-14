@@ -26,7 +26,7 @@ class Video:
     lang: str
     use_fullframe: bool
     paddleocr_path: str
-    google_lens_path: str
+    google_lens_path: str | None
     post_processing: bool
     det_model_dir: str
     rec_model_dir: str
@@ -42,7 +42,7 @@ class Video:
     start_time_offset_ms: float
     avg_frame_duration_ms: float
 
-    def __init__(self, path: str, paddleocr_path: str, det_model_dir: str, rec_model_dir: str, cls_model_dir: str, google_lens_path: str) -> None:
+    def __init__(self, path: str, paddleocr_path: str, det_model_dir: str, rec_model_dir: str, cls_model_dir: str, google_lens_path: str | None) -> None:
         self.path = path
         self.paddleocr_path = paddleocr_path
         self.det_model_dir = det_model_dir
